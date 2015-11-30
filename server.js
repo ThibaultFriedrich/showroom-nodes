@@ -5,7 +5,7 @@ var app = express();
 
 app
 .use(morgan('combined')) 
-.use(express.static(folder));
+.use(express.static('src/'));
 
 app.listen(1848);
 

@@ -8,3 +8,6 @@ NodeJS webserver using socket.io to manage several synchronized laptop screens w
 * nodeJS
 * express
 * socket.io
+* less
+* angularJS
+* material-angular
