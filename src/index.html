@@ -8,18 +8,67 @@
 		<title>Showroom</title>
 	</head>
 
-  <body ng-app="showroomNodes" ng-controller="mainCtrl" >
-  <div class="main" layout="row" layout-align="center center">
+  <body ng-app="showroomNodes" >
+  <div ng-controller="mainCtrl" class="main" layout="row" layout-align="center center">
+    <md-fab-speed-dial class="menu md-scale" md-open="menuIsOpen" md-direction="down">
+    <md-fab-trigger>
+    <md-button aria-label="menu" class="md-icon-button">
+    <md-icon md-svg-src="img/icons/menu.svg"></md-icon>
+    </md-button>
+    </md-fab-trigger>
+    <md-fab-actions>
+    <md-button aria-label="Right" class="md-fab md-raised md-mini md-primary" ng-click="synchronizing = true">
+    <md-icon md-svg-src="img/icons/sync.svg"></md-icon>
+    </md-button>
+    <md-button aria-label="Right" class="md-fab md-raised md-mini md-warn" ng-click="toRight()">
+    <md-icon md-svg-src="img/icons/right.svg"></md-icon>
+    </md-button>
+    <md-button aria-label="Left" class="md-fab md-raised md-mini md-warn" ng-click="toLeft()">
+    <md-icon md-svg-src="img/icons/left.svg"></md-icon>
+    </md-button>
+    <md-button aria-label="Stop" class="md-fab md-raised md-mini md-warn" ng-click="pause()">
+    <md-icon md-svg-src="img/icons/stop.svg"></md-icon>
+    </md-button>
+    </md-fab-actions>
+    </md-fab-speed-dial>
 
-    <div class="file" ng-class="{'bounceOutLeft':direction=='left'}">
+    <div class="file" ng-class="{'animated bounceOutLeft':direction == 'left', 'animated bounceOutRight': direction == 'right'}">
         <ng-md-icon icon="description" size="350"></ng-md-icon>
+    </div>  
+
+    <div class="synchronization" ng-if="synchronizing" layout="column" layout-align="center center">
+        <md-button aria-label="Close" class="synchronization-close md-icon-button md-primary" ng-click="quitSynchronization()">
+        <md-icon md-svg-src="img/icons/close.svg"></md-icon>
+        </md-button>
+
+          <h1 class="synchronization-title">{{currentNode.name}}</h1>
+        <div class="synchronization-nodes">
+          <div class="synchronization-node-container" ng-repeat="node in nodes" ng-mouseover="console.log('hovered');">
+            <md-button class="synchronization-node md-raised md-whiteframe-z1" layout="row" layout-align="center center" ng-class="getNodeClass(node)">
+                <div>
+                  {{node.name}}
+                </div>
+            </md-button>
+            <div class="synchronization-node-buttons" ng-class="{'synchronization-node-buttons-visible':hoveredNode === node}">
+               <md-button class="md-icon-button">
+                 <md-icon md-svg-src="img/icons/chevron_left.svg"></md-icon>
+               </md-button>
+               <md-button class="md-icon-button" ng-click="selectPrimaryNode(node)">
+                 <md-icon md-svg-src="img/icons/open_with.svg"></md-icon>
+               </md-button>
+               <md-button class="md-icon-button">
+                 <md-icon md-svg-src="img/icons/chevron_right.svg"></md-icon>
+               </md-button>
+            </div>  
+          </div>
+        </div>  
+
     </div>  
   </div>
 
   </body>
   <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
   <script type="text/javascript" src="bower_components/less/dist/less.min.js"></script>
-  
 
   <script src="bower_components/angular-resource/angular-resource.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
