@@ -1,53 +1,81 @@
 
 var app = angular.module('showroomNodes', ['ngResource','ngMaterial','ngMdIcons']);
 
-app.controller('mainCtrl', function($scope) {
+app.factory('socket', function ($rootScope) {
+  var socket = io.connect('http://localhost:1848');
+  return {
+    on: function (eventName, callback) {
+      socket.on(eventName, function () {  
+        var args = arguments;
+        $rootScope.$apply(function () {
+          callback.apply(socket, args);
+        });
+      });
+    },
+    emit: function (eventName, data, callback) {
+      socket.emit(eventName, data, function () {
+        var args = arguments;
+        $rootScope.$apply(function () {
+          if (callback) {
+            callback.apply(socket, args);
+          }
+        });
+      })
+    }
+  };
+});
+
+app.controller('mainCtrl', function($scope, socket) {
 
     this.menuIsOpen = false;
     
-    $scope.synchronizing = false;
+    $scope.synchronizing = true;
 
     $scope.direction = '';
 
+    $scope.currentNodeId = '';
+    $scope.nodes = [];
+    $scope.currentNode = null;
+    $scope.primaryNode = null;
+
+    socket.on('current-node-id', function(id){
+        console.log('current-node-id'+id);
+        $scope.currentNodeId = id;
+    });
+
+    socket.on('nodes', function (nodes) {
+        $scope.nodes = nodes;
+
+        for(var i = 0 ;  i < $scope.nodes.length ; i++){
+            if($scope.nodes[i].id == $scope.currentNodeId){
+                $scope.currentNode = $scope.nodes[i];
+            }
+            //if($scope.nodes[i].isPrimary){
+                //$scope.primaryNode = $scope.nodes[i];
+            //}
+        }
+    });
+
     $scope.getNodeClass = function(node){
         console.log('getNodeClass');
-        if(node === $scope.primaryNode){
-            return 'md-primary';
-        } else if(node === $scope.currentNode){
-            return 'md-primary md-hue-1';
-        } else {
-            return '';
+        var classes = '';
+        if(node.isPrimary){
+            classes += ' synchronization-node-primary';
+        } 
+        if(node === $scope.currentNode){
+            classes += ' md-primary';
         }
+
+        return classes;
     }
     
     $scope.selectPrimaryNode = function(node){
-        $scope.primaryNode = node;
-    };
-
-    $scope.nodes = [
-        {
-            name: 'laptop1',
-            socket: null
-        },
-        {
-            name: 'laptop2',
-            socket: null
-        },
-        {
-            name: 'laptop3',
-            socket: null
-        },
-        {
-            name: 'laptop4',
-            socket: null
+        for(var i = 0 ; i < $scope.nodes.length ; i++){
+            $scope.nodes[i].isPrimary = false;
         }
-    ];
-    
-    $scope.currentNode = $scope.nodes[1];
-    $scope.primaryNode = $scope.nodes[2];
-
-
-
+        node.isPrimary = true;
+        socket.emit('nodes', $scope.nodes);
+    };
 
     $scope.quitSynchronization = function(){
         $scope.synchronizing = false;
@@ -63,6 +91,20 @@ app.controller('mainCtrl', function($scope) {
 
     $scope.pause = function(){
         $scope.direction = '';
+    };
+
+    $scope.moveToLeft = function(node){
+        var index = $scope.nodes.indexOf(node);
+        $scope.nodes.splice(index, 1);
+        $scope.nodes.splice(index-1, 0, node);
+        socket.emit('nodes', $scope.nodes);
+    };
+    
+    $scope.moveToRight = function(node){
+        var index = $scope.nodes.indexOf(node);
+        $scope.nodes.splice(index, 1);
+        $scope.nodes.splice(index+1, 0, node);
+        socket.emit('nodes', $scope.nodes);
     };
 
     //$scope.menu = {
