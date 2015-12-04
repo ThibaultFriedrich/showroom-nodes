@@ -18,21 +18,26 @@
     </md-fab-trigger>
     <md-fab-actions>
     <md-button aria-label="Right" class="md-fab md-raised md-mini md-primary" ng-click="synchronizing = true">
-    <md-icon md-svg-src="img/icons/sync.svg"></md-icon>
+    <md-icon md-svg-src="img/icons/view_carousel.svg"></md-icon>
     </md-button>
-    <md-button aria-label="Right" class="md-fab md-raised md-mini md-warn" ng-click="toRight()">
-    <md-icon md-svg-src="img/icons/right.svg"></md-icon>
+    <md-button aria-label="Right" class="md-fab md-raised md-mini md-warn" ng-click="play()">
+    <md-icon md-svg-src="img/icons/play.svg"></md-icon>
     </md-button>
-    <md-button aria-label="Left" class="md-fab md-raised md-mini md-warn" ng-click="toLeft()">
-    <md-icon md-svg-src="img/icons/left.svg"></md-icon>
-    </md-button>
-    <md-button aria-label="Stop" class="md-fab md-raised md-mini md-warn" ng-click="pause()">
+    <md-button aria-label="Stop" class="md-fab md-raised md-mini md-warn" ng-click="stop()">
     <md-icon md-svg-src="img/icons/stop.svg"></md-icon>
     </md-button>
     </md-fab-actions>
     </md-fab-speed-dial>
 
-    <div class="file" ng-class="{'animated bounceOutLeft':direction == 'left', 'animated bounceOutRight': direction == 'right'}">
+    <!--<div class="file" ng-class="{-->
+      <!--'animated bounceOutLeft':elements['file'].type=='left'&&elements['file'].currentDisplay&&!elements['file'].nextDisplay, -->
+      <!--'animated bounceOutRight':elements['file'].type=='right'&&elements['file'].currentDisplay&&!elements['file'].nextDisplay, -->
+      <!--'animated bounceInLeft':elements['file'].type=='left'&&!elements['file'].currentDisplay&&elements['file'].nextDisplay, -->
+      <!--'animated bounceInRight':elements['file'].type=='right'&&!elements['file'].currentDisplay&&elements['file'].nextDisplay, -->
+      <!--'animated pulse': elements['file'].type=='normal'&&!elements['file'].currentDisplay&&elements['file'].nextDisplay, -->
+      <!--'animated bounceOut':elements['file'].type=='normal'&&elements['file'].currentDisplay&&!elements['file'].nextDisplay-->
+      <!--}">-->
+    <div class="file" item="elements['file']">
         <ng-md-icon icon="description" size="350"></ng-md-icon>
     </div>  
 
@@ -44,7 +49,8 @@
         <h1 class="synchronization-title">Current node: {{currentNodeId}}</h1>
         <div class="synchronization-nodes">
           <div class="synchronization-node-container" ng-repeat="node in nodes" ng-mouseover="console.log('hovered');">
-            <md-button class="synchronization-node md-raised md-whiteframe-z1" layout="row" layout-align="center center" ng-class="getNodeClass(node)">
+            <!--<md-button class="synchronization-node md-raised md-whiteframe-z1" layout="row" layout-align="center center" ng-class="getNodeClass(node)">-->
+            <md-button class="synchronization-node md-raised md-whiteframe-z1" layout="row" layout-align="center center" ng-class="{'synchronization-node-primary':node.isPrimary, 'md-primary':node == currentNode}">
                 <div>
                   {{node.id}}
                 </div>
@@ -53,7 +59,7 @@
                <md-button class="md-icon-button" ng-if="!$first" ng-click="moveToLeft(node)">
                  <md-icon md-svg-src="img/icons/chevron_left.svg"></md-icon>
                </md-button>
-               <md-button class="md-icon-button" ng-click="selectPrimaryNode(node)">
+               <md-button class="md-icon-button" ng-click="selectPrimaryNode(node)" ng-if="!node.isPrimary">
                  <md-icon md-svg-src="img/icons/open_with.svg"></md-icon>
                </md-button>
                <md-button class="md-icon-button" ng-if="!$last" ng-click="moveToRight(node)">

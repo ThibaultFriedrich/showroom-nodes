@@ -20,18 +20,13 @@ app
 server.listen(1848);
 
 var nodes = []; 
-
 var idSocket = 0;
+var currentInterval = null;
+var stepId = 0;
+var stepIdMax = 1;
 
 function findNodeId(){
     return idSocket++;
-    //for(var i = 0 ; i <= Object.size(nodes); i++){
-        //if(i == Object.size(nodes) || !nodes.hasOwnProperty('node'+i)){
-            //console.log(i);
-            //return i;
-        //} 
-    //}
-    //return 0;
 }
 
 io.on('connection', function (socket) {
@@ -57,13 +52,33 @@ io.on('connection', function (socket) {
        socket.broadcast.emit('nodes', nodes);
    });
 
+   socket.on('play', function(){
+
+       clearInterval(currentInterval);
+       currentInterval = setInterval(function(){
+           io.sockets.emit('step', stepId++);
+           if(stepId > stepIdMax){
+            stepId = 0;
+           }
+       }, 2000);
+   });
+
+   socket.on('stop', function(){
+    clearInterval(currentInterval);
+   });
+
+
    socket.on('disconnect', function(){
        var index = nodes.indexOf(node);
        var wasPrimary = node.isPrimary;
        nodes.splice(index, 1);
-       nodes[0].isPrimary = true;
-       io.emit('nodes', nodes);
+       if(nodes.length > 0){
+           nodes[0].isPrimary = true;
+           io.emit('nodes', nodes);
+       }
    });
+
 });
+
 
 
