@@ -26,41 +26,41 @@ app.factory('socket', function ($rootScope) {
 });
 
 
-app.directive('item', function (){
+app.directive('animated', function (){
     var o = {
-        restrict: 'A',
+        restrict: 'E',
         scope: {
-            'item': '='
+            'id': '='
         },
         link: function(scope, element, attrs){
-            console.log(scope.item);
-            scope.$watchGroup(['item.currentDisplay', 'item.nextDisplay', 'item.type'], function(){
-                console.log(scope.item);
+            console.log(scope.$parent.elements);
+            scope.className = element.attr('class');
+            scope.id = element.attr('id');
+            console.log(scope.id);
+            scope.animated = {
+                currentDisplay: false,
+                nextDisplay: false,
+                type: 'normal'
+            };
+            scope.$parent.elements[scope.id] = scope.animated;
+            console.log(scope.$parent.elements);
+
+            scope.$watchGroup(['animated.currentDisplay', 'animated.nextDisplay', 'animated.type'], function(){
                 var animation = 'bounce';
-                if(!scope.item.currentDisplay && scope.item.nextDisplay){
+                if(!scope.animated.currentDisplay && scope.animated.nextDisplay){
                     animation += 'In';
-                } else if(scope.item.currentDisplay && !scope.item.nextDisplay){
+                } else if(scope.animated.currentDisplay && !scope.animated.nextDisplay){
                     animation += 'Out';
                 }
 
-                if(scope.item.type == 'left'){
+                if(scope.animated.type == 'left'){
                     animation += 'Left';
-                } else if(scope.item.type == 'right'){
+                } else if(scope.animated.type == 'right'){
                     animation += 'Right';
                 }
 
-                element.attr('class', 'file animated '+animation);
+                element.attr('class', scope.className+' animated '+animation);
             });
-            //console.log(attrs.element);
-            //var e = "elements['"+attrs.ngElement+"']";
-            //element.attr("ng-class", "{"
-            //+"'animated bounceOutLeft':"+e+".type=='left'&&"+e+".currentDisplay&&!"+e+".nextDisplay,"
-            //+"'animated bounceOutRight':"+e+".type=='right'&&"+e+".currentDisplay&&!"+e+".nextDisplay,"
-            //+"'animated bounceInLeft':"+e+".type=='left'&&!"+e+".currentDisplay&&"+e+".nextDisplay,"
-            //+"'animated bounceInRight':"+e+".type=='left'&&!"+e+".currentDisplay&&"+e+".nextDisplay,"
-            //+"'animated pulse':"+e+".type=='normal'&&!"+e+".currentDisplay&&"+e+".nextDisplay,"
-            //+"'animated bouceOut':"+e+".type=='normal'&&"+e+".currentDisplay&&!"+e+".nextDisplay"
-            //+"}");
         }
     };
     return o;
@@ -76,13 +76,7 @@ app.controller('mainCtrl', function($scope, socket) {
     $scope.currentNode = {id:'', isPrimary:false};
     $scope.primaryNode = null;
 
-    $scope.elements = {
-        file:{
-            type:'normal',
-            nextDisplay: false,
-            currentDisplay: false
-        }
-    };
+    $scope.elements = {};
 
     socket.on('current-node-id', function(id){
         console.log('current-node-id'+id);

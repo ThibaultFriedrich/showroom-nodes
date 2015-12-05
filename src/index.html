@@ -37,9 +37,10 @@
       <!--'animated pulse': elements['file'].type=='normal'&&!elements['file'].currentDisplay&&elements['file'].nextDisplay, -->
       <!--'animated bounceOut':elements['file'].type=='normal'&&elements['file'].currentDisplay&&!elements['file'].nextDisplay-->
       <!--}">-->
-    <div class="file" item="elements['file']">
+
+    <animated id="file" class="file">
         <ng-md-icon icon="description" size="350"></ng-md-icon>
-    </div>  
+    </animated>  
 
     <div class="synchronization" ng-if="synchronizing" layout="column" layout-align="center center">
         <md-button aria-label="Close" class="synchronization-close md-icon-button md-primary" ng-click="quitSynchronization()">
