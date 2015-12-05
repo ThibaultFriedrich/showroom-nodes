@@ -38,8 +38,25 @@
       <!--'animated bounceOut':elements['file'].type=='normal'&&elements['file'].currentDisplay&&!elements['file'].nextDisplay-->
       <!--}">-->
 
-    <animated id="file" class="file">
-        <ng-md-icon icon="description" size="350"></ng-md-icon>
+    <animated animated-id="file" class="file">
+        <md-icon class="file-description" md-svg-src="img/icons/description.svg"></md-icon>
+    </animated>  
+
+    <div class="cloud">
+    <animated animated-id="cloud-1">
+        <md-icon class="cloud-service" md-svg-src="img/icons/dropbox.svg"></md-icon>
+    </animated>  
+    <animated animated-id="cloud-3">
+        <md-icon class="cloud-service" md-svg-src="img/icons/google-drive.svg"></md-icon>
+    </animated>  
+    </div>  
+
+    <animated animated-id="signal" class="signal">
+        <md-icon class="signal-cellular" md-svg-src="img/icons/signal_cellular.svg"></md-icon>
+    </animated>  
+    
+    <animated animated-id="elqui" class="elqui">
+        <md-icon class="elqui-icon" md-svg-src="img/icons/elqui.svg"></md-icon>
     </animated>  
 
     <div class="synchronization" ng-if="synchronizing" layout="column" layout-align="center center">

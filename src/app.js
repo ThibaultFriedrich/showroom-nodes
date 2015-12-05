@@ -35,7 +35,7 @@ app.directive('animated', function (){
         link: function(scope, element, attrs){
             console.log(scope.$parent.elements);
             scope.className = element.attr('class');
-            scope.id = element.attr('id');
+            scope.id = element.attr('animated-id');
             console.log(scope.id);
             scope.animated = {
                 currentDisplay: false,
@@ -57,9 +57,20 @@ app.directive('animated', function (){
                     animation += 'Left';
                 } else if(scope.animated.type == 'right'){
                     animation += 'Right';
+                } else if(scope.animated.type == 'down'){
+                    animation += 'Down';
+                } else if(scope.animated.type == 'up'){
+                    animation += 'Up';
+                } else if(scope.animated.type == 'fall' && scope.animated.currentDisplay && !scope.animated.nextDisplay){
+                    animation = 'rollOut';
                 }
 
-                element.attr('class', scope.className+' animated '+animation);
+                if(scope.animated.currentDisplay != scope.animated.nextDisplay){
+                    element.attr('class', scope.className+' animated '+animation);
+                } else if(!scope.animated.currentDisplay && !scope.animated.nextDisplay){
+                    element.attr('class', scope.className+' ng-hide');
+                }
+
             });
         }
     };
@@ -69,13 +80,13 @@ app.controller('mainCtrl', function($scope, socket) {
 
     this.menuIsOpen = false;
     
-    $scope.synchronizing = true;
+    $scope.synchronizing = false;
     $scope.direction = '';
     $scope.currentNodeId = '';
     $scope.nodes = [];
     $scope.currentNode = {id:'', isPrimary:false};
     $scope.primaryNode = null;
-
+    $scope.elementsInitialization = true; 
     $scope.elements = {};
 
     socket.on('current-node-id', function(id){
@@ -93,14 +104,48 @@ app.controller('mainCtrl', function($scope, socket) {
     });
 
     socket.on('step', function(id){
-        console.log('step '+id);
 
-        $scope.elements['file'].currentDisplay = $scope.elements['file'].nextDisplay;
+        if($scope.elementsInitialization){
+            $scope.elementsInitialization = false;
+            for(var prop in $scope.elements){
+                if($scope.elements.hasOwnProperty(prop)){
+                    $scope.elements[prop].currentDisplay = false;
+                    $scope.elements[prop].nextDisplay = false;
+                }
+            }
+        }
+        console.log('step '+id);
+        for(var prop in $scope.elements){
+            if($scope.elements.hasOwnProperty(prop)){
+                $scope.elements[prop].currentDisplay = $scope.elements[prop].nextDisplay;
+            }
+        }
+        console.log($scope.elements);
         if($scope.currentNode.isPrimary){
             if(id == 0){
                 $scope.elements['file'].type = 'normal';
                 $scope.elements['file'].nextDisplay = true;
+                $scope.elements['elqui'].type = 'normal';
+                $scope.elements['elqui'].nextDisplay = false;
             } else if(id == 1){
+                $scope.elements['cloud-1'].type = 'normal';
+                $scope.elements['cloud-3'].type = 'normal';
+                $scope.elements['cloud-1'].nextDisplay = true;
+                $scope.elements['cloud-3'].nextDisplay = true;
+            } else if(id == 2){
+                $scope.elements['signal'].type = 'normal';
+                $scope.elements['signal'].nextDisplay = true;
+            } else if(id == 3){
+                $scope.elements['cloud-1'].type = 'normal';
+                $scope.elements['cloud-3'].type = 'normal';
+                $scope.elements['cloud-1'].nextDisplay = false;
+                $scope.elements['cloud-3'].nextDisplay = false;
+                $scope.elements['signal'].type = 'normal';
+                $scope.elements['signal'].nextDisplay = false;
+            } else if(id == 4){
+                $scope.elements['elqui'].type = 'normal';
+                $scope.elements['elqui'].nextDisplay = true;
+            } else if(id == 5){
                 $scope.elements['file'].type = 'right';
                 $scope.elements['file'].nextDisplay = false;
             }
@@ -108,7 +153,12 @@ app.controller('mainCtrl', function($scope, socket) {
             if(id == 0){
                 $scope.elements['file'].type = 'left';
                 $scope.elements['file'].nextDisplay = true;
-            } else if(id == 1){
+                $scope.elements['elqui'].type = 'normal';
+                $scope.elements['elqui'].nextDisplay = false;
+            } else if(id == 4){
+                $scope.elements['elqui'].type = 'normal';
+                $scope.elements['elqui'].nextDisplay = true;
+            } else if(id == 5){
                 $scope.elements['file'].type = 'normal';
                 $scope.elements['file'].nextDisplay = false;
             }

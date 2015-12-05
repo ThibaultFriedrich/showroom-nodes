@@ -23,7 +23,7 @@ var nodes = [];
 var idSocket = 0;
 var currentInterval = null;
 var stepId = 0;
-var stepIdMax = 1;
+var stepIdMax = 5;
 
 function findNodeId(){
     return idSocket++;
