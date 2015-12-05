@@ -11,7 +11,7 @@ NodeJS webserver using socket.io to manage several synchronized laptop screens w
 
 Use custom directive <animated> to animate html element according to the scheduler. Each animated html element must have its own animated-id.
 
-Html: __src/index.html__
+Html: src/index.html
     
     <animated animated-id="file">
         <!-- ... -->
