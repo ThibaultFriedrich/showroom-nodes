@@ -1,6 +1,9 @@
 # showroom-nodes
 NodeJS webserver using socket.io to manage several synchronized laptop screens with animations between them.
 
+Define which elements must be animated and their move between nodes with simple expression like "move to primary".
+The web app automatically decides the directions according to nodes positions and manages the synchronized animations.
+
 # Getting started
 
 ## Installation
