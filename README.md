@@ -18,7 +18,7 @@ Html: src/index.html
         <!-- ... -->
     </animated>
 
-Use custom directive <animated> to animate html element according to the scheduler. Each animated html element must have its own animated-id.
+Use custom directive animated to animate html element according to the scheduler. Each animated html element must have its own animated-id.
 
 ### Schedule animations
 
