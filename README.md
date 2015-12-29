@@ -31,14 +31,21 @@ Json : timeline.json
         [{"file":"disappear on primary"}]
     ]
 
-Each element of the first array represents a step of the scheduler. Each element like {"file":"appear on primary"} represents a action on an element.
-The key is the id of one html <animated> element. And the value is the action.
+Each element of the first array represents a step of the scheduler. Each element like {"file":"appear on primary"} represents an animation on an element.
+The key is the id of one html animated element. And the value is the action.
 
 The actions must be constructed like this : movement + "to" or "on" + target.
 
-The possible movements are 'appear', 'disappear' or 'move'.
+The possible movements are:
 
-The possible targets are 'primary' and 'chidren'.
+* appear
+* disappear
+* move
+
+The possible targets are:
+
+* primary
+* chidren
 
 
 # Todo
