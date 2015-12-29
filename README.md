@@ -9,7 +9,8 @@ NodeJS webserver using socket.io to manage several synchronized laptop screens w
 
 ## How to use it
 
-Use custom directive <animated> to animate html element according to the scheduler. Each animated html element must have its own animated-id.
+
+### Define components
 
 Html: src/index.html
     
@@ -17,28 +18,31 @@ Html: src/index.html
         <!-- ... -->
     </animated>
 
-Js: server.js  __Configure the max step in the available__
+Use custom directive <animated> to animate html element according to the scheduler. Each animated html element must have its own animated-id.
 
-    var stepMaxIs = ... 
+### Schedule animations
 
+Json : timeline.json
 
-Js: src/app.js __Configure the scheduler__
+    [
+        [{"file":"appear on primary"}],
+        [{"file":"move to children"}],
+        [{"file":"move to primary"}],
+        [{"file":"disappear on primary"}]
+    ]
 
-    socket.on('step', function(id){
-        //...
-        if(id == 0){
-            $scope.element['file'].type = 'left';
-            $scope.element['file'].nextDisplay = false;
-        }
+Each element of the first array represents a step of the scheduler. Each element like {"file":"appear on primary"} represents a action on an element.
+The key is the id of one html <animated> element. And the value is the action.
 
-        //...
-    });
+The actions must be constructed like this : movement + "to" or "on" + target.
 
+The possible movements are 'appear', 'disappear' or 'move'.
+
+The possible targets are 'primary' and 'chidren'.
 
 
 # Todo
 
-* Move the scheduler in a specific json file with a easier way.
 * Manage several secondary nodes for the animations.
 
 
